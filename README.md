@@ -9,6 +9,8 @@ FNFSL is a Friday Night Funkin' engine designed to not change everything about F
  
 You can find it on GameJolt here: https://gamejolt.com/games/Friday-Night-Funkin-Sublime-Engine/702060
 
+You can also find it on GameBanana here: https://gamebanana.com/mods/382076
+
 ## But why should you use this engine?
 Well let me list out a few reasons why:
 * We listen to the users who use ths Engine and try to add whatever cool features you recommend us adding.
