@@ -2004,7 +2004,10 @@ class PlayState extends MusicBeatState
 		if (generatedMusic){
 			// interpolation
 			notes.forEachAlive(function(daNote:Note){
-				daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * songScrollSpeed));
+				if (FlxG.save.data.downScroll == false)
+					daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * songScrollSpeed));
+				else
+					daNote.y = (strumLine.y + (songTime - daNote.strumTime) * (0.45 * songScrollSpeed));
 			});
 		}
 
