@@ -2,6 +2,7 @@ package;
 
 import sys.FileSystem;
 import flixel.FlxSprite;
+import SLModding;
 
 class HealthIcon extends FlxSprite
 {
@@ -17,7 +18,7 @@ class HealthIcon extends FlxSprite
 		if (mod == '' || mod == null)
 			mod = SLModding.curLoaded;
 
-		if (!FileSystem.exists("mods/" + mod + "/images/characters/" + char + "/character.txt")){
+		if (!SLModding.fileExists("mods/" + mod + "/images/characters/" + char + "/character.txt")){
 			loadGraphic(Paths.image('iconGrid'), true, 150, 150);
 
 			antialiasing = true;
@@ -50,7 +51,7 @@ class HealthIcon extends FlxSprite
 			scrollFactor.set();
 		}
 		else{
-			loadGraphic(openfl.display.BitmapData.fromFile("mods/" + mod + "/images/characters/" + char + "/icons.png"), true, 150, 150);
+			loadGraphic(SLModding.getBitmap("mods/" + mod + "/images/characters/" + char + "/icons.png"), true, 150, 150);
 
 			antialiasing = true;
 

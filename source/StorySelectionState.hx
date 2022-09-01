@@ -17,6 +17,9 @@ class StorySelectionState extends MusicBeatState{
 
 	override function create()
     {
+        if (!SLModding.isInitialized)
+            FlxG.switchState(new StoryMenuState());
+
         super.create();
 
         var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuBG'));

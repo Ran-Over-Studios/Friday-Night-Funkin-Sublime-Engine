@@ -81,6 +81,11 @@ class OptionsMenu extends MusicBeatState {
 
 			FlxG.sound.play(Paths.sound('cancelMenu', 'preload'));
 		}
+
+		#if desktop
+		if (FlxG.save.data.allowMods == null)
+			FlxG.save.data.allowMods = true;
+		#end
 	}
 
 	function generateOptions(theOptionGroup:String = null){
@@ -110,10 +115,12 @@ class OptionsMenu extends MusicBeatState {
 					"Keybinds",
 					'Ghost-tapping ${FlxG.save.data.ghostTap ? 'ON' : 'OFF'}',
 					'Downscroll ${FlxG.save.data.downScroll ? 'ON' : 'OFF'}',
-					'Middlescroll ${FlxG.save.data.middleScroll ? 'ON' : 'OFF'}'
+					'Middlescroll ${FlxG.save.data.middleScroll ? 'ON' : 'OFF'}',
+					'Botplay ${FlxG.save.data.botplay ? 'ON' : 'OFF'}',
+					'Allow Modding ${FlxG.save.data.allowMods ? 'ON' : 'OFF'}'
 				];
 
-				optionSelectionProperties = [2, 0, 0, 0];
+				optionSelectionProperties = [2, 0, 0, 0, 0, 0];
 				curMenu = 'gameplay';
 			case 'graphics':
 				optionArray = [
@@ -148,6 +155,10 @@ class OptionsMenu extends MusicBeatState {
 						FlxG.save.data.downScroll = !FlxG.save.data.downScroll;
 					case 'middlescroll':
 						FlxG.save.data.middleScroll = !FlxG.save.data.middleScroll;
+					case 'botplay':
+						FlxG.save.data.botplay = !FlxG.save.data.botplay;
+					case 'allow': // allow modding
+						FlxG.save.data.allowMods = !FlxG.save.data.allowMods;
 					// graphics
 					case 'lane-underlay':
 						FlxG.save.data.laneUnderlay = !FlxG.save.data.laneUnderlay;
@@ -156,7 +167,7 @@ class OptionsMenu extends MusicBeatState {
 					case 'epilepsy':
 						FlxG.save.data.epilepsyMode = !FlxG.save.data.epilepsyMode;
 					case 'show': // show outdated screen
-					FlxG.save.data.showOutdatedScreen = !FlxG.save.data.showOutdatedScreen;
+						FlxG.save.data.showOutdatedScreen = !FlxG.save.data.showOutdatedScreen;
 				}
 
 				generateOptions(curMenu); //reload the current menu

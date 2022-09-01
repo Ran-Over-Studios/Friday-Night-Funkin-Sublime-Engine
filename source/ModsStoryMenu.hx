@@ -36,8 +36,8 @@ class ModsStoryMenu extends MusicBeatState{
         super.create();
 
         for (mods in SLModding.modsArray){
-            if (mods != '' && mods != null && FileSystem.readDirectory("mods/" + mods +"/weeks/") != null){
-                for (week in FileSystem.readDirectory("mods/" + mods +"/weeks/").filter(function(file:String):Bool{return file.indexOf(".txt") != -1;}))
+            if (mods != '' && mods != null && SLModding.readDirectory("mods/" + mods +"/weeks/") != null){
+                for (week in SLModding.readDirectory("mods/" + mods +"/weeks/").filter(function(file:String):Bool{return file.indexOf(".txt") != -1;}))
                     {
                         if (week != null){
                             var weekShit = week.toString();
@@ -131,7 +131,7 @@ class ModsStoryMenu extends MusicBeatState{
     }
 
     function getHighscore(){
-        var songTXT = File.getContent("mods/" + modLocationArray[curSelected] + "/weeks/" + optionsArray[curSelected] + ".txt");
+        var songTXT = SLModding.getContent("mods/" + modLocationArray[curSelected] + "/weeks/" + optionsArray[curSelected] + ".txt");
         var songList = songTXT.split(':');
 
         var weekNumber:Int = Std.parseInt(songList[0]);
@@ -205,7 +205,7 @@ class ModsStoryMenu extends MusicBeatState{
 
             FlxG.sound.play(Paths.sound('confirmMenu'));
 
-            var songTXT = File.getContent("mods/" + modLocationArray[curSelected] + "/weeks/" + optionsArray[curSelected] + ".txt");
+            var songTXT = SLModding.getContent("mods/" + modLocationArray[curSelected] + "/weeks/" + optionsArray[curSelected] + ".txt");
             var songList = songTXT.split(':');
 
             var weekNumber:Int = Std.parseInt(songList[0]);

@@ -66,7 +66,7 @@ class Song
 				if (mod == '')
 					mod = SLModding.curLoaded;
 
-				var rawJson = File.getContent(SLModding.generatePath(mod, "data") + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + '.json').trim();
+				var rawJson = SLModding.getContent(SLModding.generatePath(mod, "data") + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + '.json').trim();
 
 				while (!rawJson.endsWith("}"))
 				{

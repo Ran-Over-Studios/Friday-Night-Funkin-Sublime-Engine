@@ -67,7 +67,7 @@ class FreeplayState extends MusicBeatState
 			addSong(tempArray[0], Std.parseInt(tempArray[2]), tempArray[1], false, null);
 		}
 
-		/*for (song in FileSystem.readDirectory("mods/data/")) {
+		/*for (song in SLModding.readDirectory("mods/data/")) {
 			var tempArray = song.split(':');
 
 			var poop = Highscore.formatSong(tempArray[0].toLowerCase(), curDifficulty);
@@ -77,8 +77,8 @@ class FreeplayState extends MusicBeatState
 		}*/
 
 		for (mod in SLModding.modsArray){
-			if (!FileSystem.exists(SLModding.generatePath(mod, "data") + "songList.txt")){
-				for (song in FileSystem.readDirectory(SLModding.generatePath(mod, "data"))){
+			if (!SLModding.fileExists(SLModding.generatePath(mod, "data") + "songList.txt")){
+				for (song in SLModding.readDirectory(SLModding.generatePath(mod, "data"))){
 					var tempArray = song.split(':');
 	
 					var poop = Highscore.formatSong(tempArray[0].toLowerCase(), curDifficulty);
@@ -88,7 +88,7 @@ class FreeplayState extends MusicBeatState
 				}
 			}
 			else{
-				var daList:Array<String> = File.getContent(SLModding.generatePath(mod, "data") + "songList.txt").trim().split('\n');
+				var daList:Array<String> = SLModding.getContent(SLModding.generatePath(mod, "data") + "songList.txt").trim().split('\n');
 
 				for (i in 0...daList.length)
 				{
@@ -292,6 +292,7 @@ class FreeplayState extends MusicBeatState
 	
 				PlayState.storyWeek = songs[curSelected].week;
 				trace('CUR WEEK' + PlayState.storyWeek);
+				
 				LoadingState.loadAndSwitchState(new PlayState());
 			}
 		}
@@ -352,7 +353,7 @@ class FreeplayState extends MusicBeatState
 
 		#if PRELOAD_ALL
 		if (songs[curSelected].isMod){
-			FlxG.sound.playMusic(Sound.fromFile("mods/" + songs[curSelected].modName + "/songs/" + songs[curSelected].songName.toLowerCase() + "/Inst.ogg"), 0, true);
+			FlxG.sound.playMusic(SLModding.getSound("mods/" + songs[curSelected].modName + "/songs/" + songs[curSelected].songName.toLowerCase() + "/Inst.ogg"), 0, true);
 		}
 		else
 			FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
@@ -416,8 +417,8 @@ class FreeplayState extends MusicBeatState
 			}
 		}
 		else{
-			if (FileSystem.exists('mods/' + songs[curSelected].modName + '/images/characters/' + songs[curSelected].songCharacter + '/character.txt')){
-				var characterStuff:Array<String> = File.getContent('mods/' + songs[curSelected].modName + '/images/characters/' + songs[curSelected].songCharacter + '/character.txt').split('\n');
+			if (SLModding.fileExists('mods/' + songs[curSelected].modName + '/images/characters/' + songs[curSelected].songCharacter + '/character.txt')){
+				var characterStuff:Array<String> = SLModding.getContent('mods/' + songs[curSelected].modName + '/images/characters/' + songs[curSelected].songCharacter + '/character.txt').split('\n');
 
 				for (junk in characterStuff){
 					var shit = junk.split(':');

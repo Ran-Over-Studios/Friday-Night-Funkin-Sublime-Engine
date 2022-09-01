@@ -1,5 +1,7 @@
 package;
 
+import lime.utils.AssetType;
+import openfl.Assets;
 import sys.FileSystem;
 import sys.io.File;
 import flixel.FlxG;
@@ -53,7 +55,7 @@ class Character extends FlxSprite
 
 		trace('Attempting to load character: ' + curCharacter);
 
-		if (FileSystem.exists('assets/shared/characters/$daPlayer.txt'))
+		if (Assets.exists('assets/shared/characters/$daPlayer.txt'))
 		{
 			characterArray = CoolUtil.coolTextFile(Paths.character(daPlayer));
 
@@ -62,10 +64,10 @@ class Character extends FlxSprite
 
 			loadCharacterData();
 		}
-		else if (FileSystem.exists(pathVar + "/character.txt")){
-			var daList:Array<String> = File.getContent(pathVar + "/" + "/character.txt").trim().split('\n');
+		else if (SLModding.fileExists(pathVar + "/character.txt")){
+			var daList:Array<String> = SLModding.getContent(pathVar + "/" + "/character.txt").trim().split('\n');
 
-			tex = FlxAtlasFrames.fromSparrow(openfl.display.BitmapData.fromFile(pathVar + "/" + daPlayer + ".png"), File.getContent(pathVar + "/" + daPlayer + ".xml"));
+			tex = FlxAtlasFrames.fromSparrow(SLModding.getBitmap(pathVar + "/" + daPlayer + ".png"), SLModding.getContent(pathVar + "/" + daPlayer + ".xml"));
 			frames = tex;
 					
 			for (i in 0...daList.length){
@@ -528,7 +530,7 @@ class Character extends FlxSprite
 
 	override function update(elapsed:Float)
 	{
-		if (!isPlayer)
+		if (!isPlayer && !PlayState.perfectMode || PlayState.perfectMode)
 		{
 			if (animation.curAnim.name.startsWith('sing'))
 			{

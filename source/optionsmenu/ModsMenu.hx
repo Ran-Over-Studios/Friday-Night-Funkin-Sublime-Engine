@@ -90,7 +90,7 @@ class ModsMenu extends MusicBeatState
             }
         }
 
-        modIcon = new FlxSprite().loadGraphic(openfl.display.BitmapData.fromFile(SLModding.generatePath(mod) + 'icon.png'));
+        modIcon = new FlxSprite().loadGraphic(SLModding.getBitmap(SLModding.generatePath(mod) + 'icon.png'));
         modIcon.setGraphicSize(256, 256);
         modIcon.updateHitbox();
         modIcon.antialiasing = true;

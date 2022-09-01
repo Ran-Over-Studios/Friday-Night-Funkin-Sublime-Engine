@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin' Sublime Engine" file="FNFSL" packageName="com.spunblue.fnfsl" package="com.spunblue.fnfsl" main="Main" company="spunblue" version="4.1.1"/>
+	<app title="Friday Night Funkin' Sublime Engine" file="FNFSL" packageName="com.spunblue.fnfsl" package="com.spunblue.fnfsl" main="Main" company="spunblue" version="4.2.0"/>
 
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
 		or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"-->
@@ -28,6 +28,7 @@
 	<!--Mobile-specific-->
 	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" resizable="false"/>
 
+
 	<!-- _____________________________ Path Settings ____________________________ -->
 
 	<set name="BUILD_DIR" value="export/debug" if="debug" />
@@ -42,18 +43,30 @@
 	<assets path="assets/preload/videos" exclude="*.mp4" unless="web"/>
 
 	<!--compatability things-->
-	<!--<section if="mac">
+	<section if="mobile">
 		<assets path="plugins/" exclude="*"/>
-		<assets path="dlls/" exclude="*"/>
 		<assets path="source/vlc/" exclude="*"/>
 		<assets path="assets/preload/videos" exclude="*"/>
-	</section>-->
+		<assets path="source/VideoHandler.hx" exclude="*"/>
+		<assets path="source/VideoSprite.hx" exclude="*"/>
+	</section>
+
+	<section if="html5"> <!--i have not tested this-->
+		<assets path="plugins/" exclude="*"/>
+		<assets path="source/vlc/" exclude="*"/>
+		<assets path="assets/preload/videos" exclude="*"/>
+		<assets path="source/VideoHandler.hx" exclude="*"/>
+		<assets path="source/VideoSprite.hx" exclude="*"/>
+	</section>
 
 	<assets path="plugins/win" rename='' if="linux"/>
 	<assets path="plugins/win" rename='' if="windows"/>
 	<assets path="plugins/mac" rename='' if="mac"/>
 
-	<assets path="include/" rename='' embed="false"/>
+	<assets path="assets" embed="false"></assets>
+
+	<assets path="include/" rename="" embed="false" if="desktop"></assets>
+	<assets path="include/" exclude="*" if="mobile"></assets>
 
 	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>
 	<assets path="assets/preload" rename="assets" exclude="*.mp3" unless="web"/>
@@ -132,6 +145,7 @@
 	<haxelib name="faxe" if='switch'/>
 	<haxelib name="discord_rpc" if="desktop"/>
 	<!-- <haxelib name="hxcpp-debug-server" if="desktop"/> -->
+	<haxelib name="android6permissions" if="android"></haxelib>
 
 	<!-- <haxelib name="markdown" /> -->
 	<!-- <haxelib name="HtmlParser" /> -->

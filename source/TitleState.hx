@@ -21,6 +21,9 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.app.Application;
 import openfl.Assets;
+#if android
+import com.player03.android6.Permissions;
+#end
 
 using StringTools;
 
@@ -53,8 +56,20 @@ class TitleState extends MusicBeatState
 
 		PlayerSettings.init();
 
+		#if desktop
 		if (FlxG.save.data.allowMods == null || FlxG.save.data.allowMods)
 			SLModding.init();
+		#elseif mobile
+		if (FlxG.save.data.allowMods)
+			SLModding.init();
+		#end
+
+		#if android
+		var permission:String = Permissions.READ_EXTERNAL_STORAGE;
+
+		if(!Permissions.hasPermission(permission))
+			Permissions.requestPermission(permission);
+		#end
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
 
@@ -80,9 +95,11 @@ class TitleState extends MusicBeatState
 				StoryMenuState.weekUnlocked[0] = true;
 		}
 
+		#if desktop
 		if (FlxG.save.data.epilepsyMode == null) {
 			FlxG.switchState(new EpilepsyState());
 		}
+		#end
 
 		#if FREEPLAY
 		FlxG.switchState(new FreeplayState());
@@ -178,6 +195,14 @@ class TitleState extends MusicBeatState
 		titleText.updateHitbox();
 		// titleText.screenCenter(X);
 		add(titleText);
+
+		#if mobile
+		var warningText:FlxText = new FlxText(0,0,FlxG.width, "Controller or Keyboard required to Play...", 32);
+		warningText.setFormat(null, 32, FlxColor.RED, CENTER);
+		warningText.screenCenter(Y);
+		warningText.y = warningText.y + 128;
+		add(warningText);
+		#end
 
 		var logo:FlxSprite = new FlxSprite().loadGraphic(Paths.image('logo'));
 		logo.screenCenter();

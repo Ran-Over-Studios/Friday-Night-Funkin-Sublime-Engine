@@ -13,7 +13,7 @@ import flixel.util.FlxColor;
 /**
 	*DEBUG MODE
  */
-class AnimationDebug extends FlxState
+class AnimationDebug extends MusicBeatState
 {
 	var bf:Boyfriend;
 	var dad:Character;
@@ -147,15 +147,22 @@ class AnimationDebug extends FlxState
 			camFollow.velocity.set();
 		}
 
-		if (FlxG.keys.justPressed.W)
+		#if desktop
+		if (controls.UP_P && !FlxG.keys.anyPressed([SHIFT]))
 		{
 			curAnim -= 1;
 		}
 
-		if (FlxG.keys.justPressed.S)
+		if (controls.DOWN_P && !FlxG.keys.anyPressed([SHIFT]))
 		{
 			curAnim += 1;
 		}
+		#elseif mobile
+		if (controls.ACCEPT)
+			{
+				curAnim += 1;
+			}
+		#end
 
 		if (curAnim < 0)
 			curAnim = animList.length - 1;
@@ -163,48 +170,86 @@ class AnimationDebug extends FlxState
 		if (curAnim >= animList.length)
 			curAnim = 0;
 
-		if (FlxG.keys.justPressed.S || FlxG.keys.justPressed.W || FlxG.keys.justPressed.SPACE)
-		{
+		#if mobile
+		if (controls.ACCEPT){
 			char.playAnim(animList[curAnim]);
 
 			updateTexts();
 			genBoyOffsets(false);
 		}
+		#elseif desktop
+		if (controls.UP_P)
+			{
+				char.playAnim(animList[curAnim]);
+	
+				updateTexts();
+				genBoyOffsets(false);
+			}
+	
+			if (controls.DOWN_P)
+			{
+				char.playAnim(animList[curAnim]);
+	
+				updateTexts();
+				genBoyOffsets(false);
+			}
+		#end
 
-		var upP = FlxG.keys.anyJustPressed([UP]);
-		var rightP = FlxG.keys.anyJustPressed([RIGHT]);
-		var downP = FlxG.keys.anyJustPressed([DOWN]);
-		var leftP = FlxG.keys.anyJustPressed([LEFT]);
+		var upP = controls.UP_P;
+		var rightP = controls.RIGHT_P;
+		var downP = controls.DOWN_P;
+		var leftP = controls.LEFT_P;
 
 		var holdShift = FlxG.keys.pressed.SHIFT;
 		var multiplier = 1;
 		if (holdShift)
 			multiplier = 10;
 
-		if (upP || rightP || downP || leftP)
-		{
-			updateTexts();
-			if (upP)
-				char.animOffsets.get(animList[curAnim])[1] += 1 * multiplier;
-			if (downP)
-				char.animOffsets.get(animList[curAnim])[1] -= 1 * multiplier;
-			if (leftP)
-				char.animOffsets.get(animList[curAnim])[0] += 1 * multiplier;
-			if (rightP)
-				char.animOffsets.get(animList[curAnim])[0] -= 1 * multiplier;
-
-			updateTexts();
-			genBoyOffsets(false);
-			char.playAnim(animList[curAnim]);
+		#if desktop
+		if (upP && FlxG.keys.anyPressed([SHIFT]) || rightP && FlxG.keys.anyPressed([SHIFT]) || downP && FlxG.keys.anyPressed([SHIFT]) || leftP && FlxG.keys.anyPressed([SHIFT])){
+			{
+				updateTexts();
+				if (upP)
+					char.animOffsets.get(animList[curAnim])[1] += 1 * multiplier;
+				if (downP)
+					char.animOffsets.get(animList[curAnim])[1] -= 1 * multiplier;
+				if (leftP)
+					char.animOffsets.get(animList[curAnim])[0] += 1 * multiplier;
+				if (rightP)
+					char.animOffsets.get(animList[curAnim])[0] -= 1 * multiplier;
+	
+				updateTexts();
+				genBoyOffsets(false);
+				char.playAnim(animList[curAnim]);
+			}
 		}
+		#elseif mobile
+		if (upP || rightP || downP || leftP){
+			{
+				updateTexts();
+				if (upP)
+					char.animOffsets.get(animList[curAnim])[1] += 1 * multiplier;
+				if (downP)
+					char.animOffsets.get(animList[curAnim])[1] -= 1 * multiplier;
+				if (leftP)
+					char.animOffsets.get(animList[curAnim])[0] += 1 * multiplier;
+				if (rightP)
+					char.animOffsets.get(animList[curAnim])[0] -= 1 * multiplier;
+	
+				updateTexts();
+				genBoyOffsets(false);
+				char.playAnim(animList[curAnim]);
+			}
+		}
+		#end
 
 		super.update(elapsed);
 
-		if (FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE]) && !tempExit){
+		if (controls.BACK && !tempExit){
 			tempExit = true;
 			exitText.visible = true;
 		}
-		else if (FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE]) && tempExit){
+		else if (controls.BACK && tempExit){
 			FlxG.switchState(new MainMenuState());
 		}
 	}

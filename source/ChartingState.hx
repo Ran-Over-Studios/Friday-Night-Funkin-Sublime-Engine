@@ -302,43 +302,12 @@ class ChartingState extends MusicBeatState
 		var stagelist:Array<String> = [];
 		var noteskins:Array<String>;
 		
-		if (SLModding.curLoaded != '' || SLModding.curLoaded != null){
-			var tempChararcters = File.getContent(Paths.txt('dadList')) + File.getContent(Paths.txt('bfList')) + File.getContent(Paths.txt('gfList'));
-			
-			if (FileSystem.readDirectory("mods/" + SLModding.curLoaded + "/images/characters/") != null){
-				tempChararcters = tempChararcters.substring(0, tempChararcters.length - 1);
-	
-				var allCharacters:Array<String> = tempChararcters.split('\n');
-	
-				dadCharacters = allCharacters;
-				bfCharacters = allCharacters;
-				gfCharacters = allCharacters;
-			}
-			else{
-				dadCharacters= CoolUtil.coolTextFile(Paths.txt('dadList'));
-				bfCharacters = CoolUtil.coolTextFile(Paths.txt('bfList'));
-				gfCharacters = CoolUtil.coolTextFile(Paths.txt('gfList'));
-			}
+		dadCharacters= CoolUtil.coolTextFile(Paths.txt('dadList'));
+		bfCharacters = CoolUtil.coolTextFile(Paths.txt('bfList'));
+		gfCharacters = CoolUtil.coolTextFile(Paths.txt('gfList'));
 
-
-			var tempStageList = File.getContent(Paths.txt('stageList'));
-			
-			if (FileSystem.readDirectory("mods/" + SLModding.curLoaded + "/images/stages/") != null){
-				tempStageList = tempStageList.substring(0, tempStageList.length - 1);
-	
-				stagelist = tempStageList.split('\n');
-			}
-
-			noteskins = CoolUtil.coolTextFile(Paths.txt('noteskinList'));
-		}
-		else{
-			dadCharacters= CoolUtil.coolTextFile(Paths.txt('dadList'));
-			bfCharacters = CoolUtil.coolTextFile(Paths.txt('bfList'));
-			gfCharacters = CoolUtil.coolTextFile(Paths.txt('gfList'));
-
-			stagelist = CoolUtil.coolTextFile(Paths.txt('stageList'));
-			noteskins = CoolUtil.coolTextFile(Paths.txt('noteskinList'));
-		}
+		stagelist = CoolUtil.coolTextFile(Paths.txt('stageList'));
+		noteskins = CoolUtil.coolTextFile(Paths.txt('noteskinList'));
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(bfCharacters, true), function(character:String)
 		{
@@ -501,12 +470,12 @@ class ChartingState extends MusicBeatState
 		if (SLModding.curLoaded == null)
 			FlxG.sound.playMusic(Paths.inst(daSong), 0.6);
 		else
-			FlxG.sound.playMusic(Sound.fromFile("mods/" + SLModding.curLoaded + "/songs/" + PlayState.SONG.song.toLowerCase() + "/Inst.ogg"), 0.6);
+			FlxG.sound.playMusic(SLModding.getSound("mods/" + SLModding.curLoaded + "/songs/" + PlayState.SONG.song.toLowerCase() + "/Inst.ogg"), 0.6);
 
 		if (SLModding.curLoaded == null)
 			vocals = new FlxSound().loadEmbedded(Paths.voices(daSong));
 		else
-			vocals = new FlxSound().loadEmbedded(Sound.fromFile("mods/" + SLModding.curLoaded + "/songs/" + PlayState.SONG.song.toLowerCase() + "/Voices.ogg"));
+			vocals = new FlxSound().loadEmbedded(SLModding.getSound("mods/" + SLModding.curLoaded + "/songs/" + PlayState.SONG.song.toLowerCase() + "/Voices.ogg"));
 
 		FlxG.sound.list.add(vocals);
 
@@ -855,7 +824,7 @@ class ChartingState extends MusicBeatState
 				dummyArrow.y = Math.floor(FlxG.mouse.y / GRID_SIZE) * GRID_SIZE;
 		}
 
-		if (FlxG.keys.justPressed.ENTER)
+		if (controls.BACK || controls.PAUSE)
 		{
 			lastSection = curSection;
 
@@ -902,7 +871,7 @@ class ChartingState extends MusicBeatState
 				if (FlxG.keys.justPressed.LEFT || FlxG.keys.justPressed.A)
 					changeSection(curSection - shiftThing);
 			}	
-			if (FlxG.keys.justPressed.SPACE)
+			if (controls.ACCEPT)
 			{
 				if (FlxG.sound.music.playing)
 				{
@@ -935,14 +904,14 @@ class ChartingState extends MusicBeatState
 
 			if (!FlxG.keys.pressed.SHIFT)
 			{
-				if (FlxG.keys.pressed.W || FlxG.keys.pressed.S)
+				if (controls.UP || controls.DOWN)
 				{
 					FlxG.sound.music.pause();
 					vocals.pause();
 
 					var daTime:Float = 700 * FlxG.elapsed;
 
-					if (FlxG.keys.pressed.W)
+					if (controls.UP)
 					{
 						FlxG.sound.music.time -= daTime;
 					}
@@ -954,14 +923,14 @@ class ChartingState extends MusicBeatState
 			}
 			else
 			{
-				if (FlxG.keys.justPressed.W || FlxG.keys.justPressed.S)
+				if (controls.UP_P || controls.DOWN_P)
 				{
 					FlxG.sound.music.pause();
 					vocals.pause();
 
 					var daTime:Float = Conductor.stepCrochet * 2;
 
-					if (FlxG.keys.justPressed.W)
+					if (controls.UP_P)
 					{
 						FlxG.sound.music.time -= daTime;
 					}

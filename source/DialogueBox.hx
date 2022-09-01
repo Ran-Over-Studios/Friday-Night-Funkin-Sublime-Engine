@@ -1,5 +1,8 @@
 package;
 
+import Controls.Device;
+import lime.ui.Gamepad;
+import Controls.Control;
 import sys.io.File;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -250,9 +253,28 @@ class DialogueBox extends FlxSpriteGroup
 			dialogueStarted = true;
 		}
 
-		if (FlxG.keys.justPressed.ANY  && dialogueStarted == true)
+		if (FlxG.keys.justPressed.ANY && FlxG.gamepads.anyJustPressed(A) && dialogueStarted == true)
 		{
-			remove(dialogue);
+			continueDialogue();
+		}
+
+		for (touch in FlxG.touches.list){
+			if (touch.justPressed)
+				continueDialogue();
+		}
+		
+		super.update(elapsed);
+
+		if (portraitRight.visible && box.flipX) // no idea if this will work
+			box.flipX = false;
+		else if (!portraitRight.visible && !box.flipX)
+			box.flipX = true;
+	}
+
+	var isEnding:Bool = false;
+
+	function continueDialogue(){
+		remove(dialogue);
 				
 			FlxG.sound.play(Paths.sound('clickText'), 0.8);
 
@@ -287,17 +309,7 @@ class DialogueBox extends FlxSpriteGroup
 				dialogueList.remove(dialogueList[0]);
 				startDialogue();
 			}
-		}
-		
-		super.update(elapsed);
-
-		if (portraitRight.visible && box.flipX) // no idea if this will work
-			box.flipX = false;
-		else if (!portraitRight.visible && !box.flipX)
-			box.flipX = true;
 	}
-
-	var isEnding:Bool = false;
 
 	function startDialogue():Void
 	{

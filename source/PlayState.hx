@@ -156,6 +156,8 @@ class PlayState extends MusicBeatState
 
 	var crt:CRT = new CRT();
 
+	public static var perfectMode:Bool = false;
+
 	override public function create()
 	{
 		if (FlxG.sound.music != null)
@@ -163,6 +165,8 @@ class PlayState extends MusicBeatState
 
 		if (SLModding.curLoaded != null)
 			isMod = true;
+
+		perfectMode = FlxG.save.data.botplay;
 
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
@@ -177,16 +181,18 @@ class PlayState extends MusicBeatState
 		persistentUpdate = true;
 		persistentDraw = true;
 
+		#if desktop
 		if (Paths.txt(SONG.song + "/shader") != null)
 			curShader = Paths.txt(SONG.song + "/shader");
 
-		if (FileSystem.exists(SLModding.generatePath(SLModding.curLoaded, "data/" + SONG.song) + "shader.txt"))
-			curShader = File.getContent(SLModding.generatePath(SLModding.curLoaded, "data/" + SONG.song) + "shader.txt");
+		if (SLModding.fileExists(SLModding.generatePath(SLModding.curLoaded, "data/" + SONG.song) + "shader.txt"))
+			curShader = SLModding.getContent(SLModding.generatePath(SLModding.curLoaded, "data/" + SONG.song) + "shader.txt");
 
 		switch(curShader.toLowerCase()){
 			case 'crt':
 				camGame.setFilters([new ShaderFilter(crt.shader)]);
 		}
+		#end
 
 		if (FlxG.save.data.downScroll == null)
 			FlxG.save.data.downScroll = false;
@@ -214,8 +220,8 @@ class PlayState extends MusicBeatState
 			case 'tutorial':
 				dialogue = [":gf:Holy shit you're hot as funk" , ':bf:Holy shit you\'re also hot as funk', ':gf:... Wanna Funk?'];
 			default:
-				if (isMod && FileSystem.exists('mods/data/' + SONG.song.toLowerCase() + '/dialogue.txt')){
-					var daList:Array<String> = File.getContent('mods/data/' + SONG.song.toLowerCase() + '/dialogue.txt').trim().split('\n');
+				if (isMod && SLModding.fileExists('mods/data/' + SONG.song.toLowerCase() + '/dialogue.txt')){
+					var daList:Array<String> = SLModding.getContent('mods/data/' + SONG.song.toLowerCase() + '/dialogue.txt').trim().split('\n');
 
 					for (i in 0...daList.length)
 					{
@@ -310,10 +316,10 @@ class PlayState extends MusicBeatState
 				trace('Stage & GF Changing not supported');
 		}
 
-		if (FileSystem.exists('mods/' + SLModding.curLoaded + '/images/stages/' + SONG.stage + '/stage.txt') && !FileSystem.exists('mods/' + SLModding.curLoaded + '/images/stages/' + SONG.stage + '/do not use')){
+		if (SLModding.fileExists('mods/' + SLModding.curLoaded + '/images/stages/' + SONG.stage + '/stage.txt') && !SLModding.fileExists('mods/' + SLModding.curLoaded + '/images/stages/' + SONG.stage + '/do not use')){
 			isCustomStage = true;
 
-			var daList:Array<String> = File.getContent('mods/' + SLModding.curLoaded + '/images/stages/' + SONG.stage + '/stage.txt').trim().split('\n');
+			var daList:Array<String> = SLModding.getContent('mods/' + SLModding.curLoaded + '/images/stages/' + SONG.stage + '/stage.txt').trim().split('\n');
 					
 			for (i in 0...daList.length){
 				daList[i] = daList[i].trim();
@@ -332,15 +338,15 @@ class PlayState extends MusicBeatState
 					var daSprite = new FlxSprite(Std.parseInt(SplitLines[1]), Std.parseInt(SplitLines[2]));
 
 					if (SplitLines[6] != 'png'){
-						var texture = FlxAtlasFrames.fromSparrow(openfl.display.BitmapData.fromFile('mods/' + SLModding.curLoaded + '/images/stages/' + SONG.stage + '/' + SplitLines[0] + ".png"),
-						File.getContent('mods/' + SLModding.curLoaded + '/images/stages/' + SONG.stage + '/' + SplitLines[0] + ".xml"));
+						var texture = FlxAtlasFrames.fromSparrow(SLModding.getBitmap('mods/' + SLModding.curLoaded + '/images/stages/' + SONG.stage + '/' + SplitLines[0] + ".png"),
+						SLModding.getContent('mods/' + SLModding.curLoaded + '/images/stages/' + SONG.stage + '/' + SplitLines[0] + ".xml"));
 
 						daSprite.frames = texture;
 						daSprite.animation.addByPrefix('idle', SplitLines[7]);
 						daSprite.animation.play('idle');
 					}
 					else{
-						daSprite.loadGraphic(openfl.display.BitmapData.fromFile('mods/' + SLModding.curLoaded + '/images/stages/' + SONG.stage + '/' + SplitLines[0] + ".png"));
+						daSprite.loadGraphic(SLModding.getBitmap('mods/' + SLModding.curLoaded + '/images/stages/' + SONG.stage + '/' + SplitLines[0] + ".png"));
 					}
 					daSprite.scrollFactor.x = Std.parseInt(SplitLines[3]);
 					daSprite.scrollFactor.y = Std.parseInt(SplitLines[4]);
@@ -852,8 +858,8 @@ class PlayState extends MusicBeatState
 
 		generateSong(SONG.song);
 
-		if (isMod && FileSystem.exists("mods/" + SLModding.curLoaded + "/data/" + SONG.song.toLowerCase() + "/events.txt")){
-			var daList:Array<String> = File.getContent("mods/" + SLModding.curLoaded + "/data/" + SONG.song.toLowerCase() + "/events.txt").trim().split('\n');
+		if (isMod && SLModding.fileExists("mods/" + SLModding.curLoaded + "/data/" + SONG.song.toLowerCase() + "/events.txt")){
+			var daList:Array<String> = SLModding.getContent("mods/" + SLModding.curLoaded + "/data/" + SONG.song.toLowerCase() + "/events.txt").trim().split('\n');
 	
 			for (i in 0...daList.length)
 			{
@@ -863,7 +869,7 @@ class PlayState extends MusicBeatState
 			events = daList;
 			trace(events);
 		}
-		else if (FileSystem.exists(Paths.file("data/" + SONG.song.toLowerCase() + "/events.txt")))
+		else if (SLModding.fileExists(Paths.file("data/" + SONG.song.toLowerCase() + "/events.txt")))
 			events = CoolUtil.coolTextFile(Paths.file('data/' + SONG.song.toLowerCase() + '/events.txt'));
 
 		if (songScrollSpeed != PlayState.SONG.speed) // if the song speed is different than the default speed due to a mod
@@ -914,8 +920,8 @@ class PlayState extends MusicBeatState
 		}
 
 		// mod shit
-		if (boyfriend.isMod && FileSystem.exists('mods/' + SLModding.curLoaded + '/images/characters/' + PlayState.SONG.player1 + '/character.txt')){
-			var characterStuff:Array<String> = File.getContent('mods/' + SLModding.curLoaded + '/images/characters/' + PlayState.SONG.player1 + '/character.txt').split('\n');
+		if (boyfriend.isMod && SLModding.fileExists('mods/' + SLModding.curLoaded + '/images/characters/' + PlayState.SONG.player1 + '/character.txt')){
+			var characterStuff:Array<String> = SLModding.getContent('mods/' + SLModding.curLoaded + '/images/characters/' + PlayState.SONG.player1 + '/character.txt').split('\n');
 
 			for (color in characterStuff){
 				if (!color.startsWith('#')) {
@@ -928,8 +934,8 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		if (dad.isMod && FileSystem.exists('mods/' + SLModding.curLoaded + '/images/characters/' + PlayState.SONG.player2 + '/character.txt')){
-			var characterStuff:Array<String> = File.getContent('mods/' + SLModding.curLoaded + '/images/characters/' + PlayState.SONG.player2 + '/character.txt').split('\n');
+		if (dad.isMod && SLModding.fileExists('mods/' + SLModding.curLoaded + '/images/characters/' + PlayState.SONG.player2 + '/character.txt')){
+			var characterStuff:Array<String> = SLModding.getContent('mods/' + SLModding.curLoaded + '/images/characters/' + PlayState.SONG.player2 + '/character.txt').split('\n');
 
 			for (color in characterStuff){
 				if (!color.startsWith('#')) {
@@ -1075,7 +1081,7 @@ class PlayState extends MusicBeatState
 				case 'tutorial':
 					schoolIntro(doof);
 				default:
-					if (!FileSystem.exists('mods/' + SLModding.curLoaded + '/cutscenes/' + curSong + '/start.mp4')){
+					if (!SLModding.fileExists('mods/' + SLModding.curLoaded + '/cutscenes/' + curSong + '/start.mp4')){
 							if (!isMod || isMod && !hasDialogue)
 								startCountdown();
 							else if (isMod && hasDialogue){
@@ -1184,7 +1190,6 @@ class PlayState extends MusicBeatState
 	}
 
 	var startTimer:FlxTimer;
-	var perfectMode:Bool = false;
 
 	function startCountdown():Void
 	{
@@ -1322,7 +1327,7 @@ class PlayState extends MusicBeatState
 		if (!paused && !isMod)
 			FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 1, false);
 		else if (!paused && isMod)
-			FlxG.sound.playMusic(Sound.fromFile("mods/" + SLModding.curLoaded + "/songs/" + PlayState.SONG.song.toLowerCase() + "/Inst.ogg"), 1, false);
+			FlxG.sound.playMusic(SLModding.getSound("mods/" + SLModding.curLoaded + "/songs/" + PlayState.SONG.song.toLowerCase() + "/Inst.ogg"), 1, false);
 		FlxG.sound.music.onComplete = endSong;
 		vocals.play();
 
@@ -1350,7 +1355,7 @@ class PlayState extends MusicBeatState
 		if (SONG.needsVoices && inCutscene == false && !isMod)
 			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
 		else if (SONG.needsVoices && inCutscene == false && isMod)
-			vocals = new FlxSound().loadEmbedded(Sound.fromFile("mods/" + SLModding.curLoaded + "/songs/" + PlayState.SONG.song.toLowerCase() + "/Voices.ogg"));
+			vocals = new FlxSound().loadEmbedded(SLModding.getSound("mods/" + SLModding.curLoaded + "/songs/" + PlayState.SONG.song.toLowerCase() + "/Voices.ogg"));
 		else
 			vocals = new FlxSound();
 
@@ -1669,10 +1674,6 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
-		#if !debug
-		perfectMode = false;
-		#end
-
 		if (FlxG.keys.justPressed.NINE)
 		{
 			if (iconP1.animation.curAnim.name == 'bf-old')
@@ -1699,8 +1700,10 @@ class PlayState extends MusicBeatState
 
 		super.update(elapsed);
 
+		#if desktop
 		if (curShader.toLowerCase() == 'crt')
 				crt.shader.uTime.value = [elapsed];
+		#end
 
 		scoreTxt.text = 'Score: $songScore • Misses: $misses • Accuracy: ${calculateRating()} • Combo: $combo';
 		rankTxt.text = 'Sicks • $sicks\nGoods • $goods\nBads • $bads\nShits • $shits';
@@ -1710,7 +1713,7 @@ class PlayState extends MusicBeatState
 		
 		//trace(songBarTimeTxt.text + ' | ' + Conductor.songPosition);
 
-		if (FlxG.keys.justPressed.ENTER && startedCountdown && canPause)
+		if (controls.PAUSE && startedCountdown && canPause)
 		{
 			persistentUpdate = false;
 			persistentDraw = true;
@@ -1730,14 +1733,14 @@ class PlayState extends MusicBeatState
 			#end
 		}
 
-		if (FlxG.keys.justPressed.SEVEN)
+		/*if (FlxG.keys.justPressed.SEVEN)
 		{
 			FlxG.switchState(new ChartingState());
 
 			#if desktop
 			DiscordClient.changePresence("Chart Editor", null, null, true);
 			#end
-		}
+		}*/
 
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
@@ -1785,9 +1788,6 @@ class PlayState extends MusicBeatState
 
 		/* if (FlxG.keys.justPressed.NINE)
 			FlxG.switchState(new Charting()); */
-
-		if (FlxG.keys.justPressed.EIGHT)
-			FlxG.switchState(new AnimationDebug(SONG.player2));
 
 		if (startingSong)
 		{
@@ -2129,8 +2129,6 @@ class PlayState extends MusicBeatState
 										spr.offset.y -= 13;
 									case 'pixel':
 										// not needed
-									case 'circle':
-										spr.centerOffsets();
 								}
 							}
 							else{
@@ -2143,10 +2141,63 @@ class PlayState extends MusicBeatState
 					daNote.destroy();
 				}
 
+				if (FlxG.save.data.downScroll == false ? perfectMode && daNote.mustPress && daNote.y <= strumLine.y : perfectMode && daNote.mustPress && daNote.y >= strumLine.y){
+					
+					boyfriend.holdTimer = 0;
+
+					if (!daNote.isSustainNote){
+						sicks++;
+						combo++;
+					}
+
+					switch (Math.abs(daNote.noteData))
+					{
+						case 0:
+							boyfriend.playAnim('singLEFT', true);
+						case 1:
+							boyfriend.playAnim('singDOWN', true);
+						case 2:
+							boyfriend.playAnim('singUP', true);
+						case 3:
+							boyfriend.playAnim('singRIGHT', true);
+					}
+
+					playerStrums.forEach(function(spr:FlxSprite)
+						{
+							
+							if (Math.abs(daNote.noteData) == spr.ID)
+							{	
+								spr.animation.play('confirm', true);
+								
+								if (!daNote.isSustainNote)
+									noteSplash(daNote.x, daNote.y, daNote.noteData, false);
+								
+								if (spr.animation.curAnim.name == 'confirm')
+									{
+										switch (SONG.noteskin){
+											default:
+												spr.centerOffsets();
+												spr.offset.x -= 13;
+												spr.offset.y -= 13;
+											case 'pixel':
+												// not needed
+										}
+									}
+									else{
+										spr.centerOffsets();
+									}
+							}
+						});
+					
+					daNote.kill();
+					notes.remove(daNote, true);
+					daNote.destroy();
+				}
+
 				// if the player is late, miss.
 				if ((FlxG.save.data.downScroll == false) ? daNote.y < -daNote.height : daNote.y > FlxG.height + daNote.height)
 				{	
-					if (daNote.tooLate || !daNote.wasGoodHit)
+					if (daNote.tooLate && !perfectMode || !daNote.wasGoodHit && !perfectMode)
 					{
 						health -= 0.1;
 						combo = 0;
@@ -2189,7 +2240,19 @@ class PlayState extends MusicBeatState
 				}
 			});
 
-		if (!inCutscene)
+		if (perfectMode){
+			playerStrums.forEach(function(spr:FlxSprite)
+				{
+					if (spr.animation.finished && spr.animation.curAnim.name == 'confirm')
+					{
+						spr.animation.play('static');
+						spr.centerOffsets();
+						// trace('confirm animation finished');
+					}
+				});
+		}
+
+		if (!inCutscene && !perfectMode)
 			keyShit();
 
 		#if debug
@@ -2201,7 +2264,7 @@ class PlayState extends MusicBeatState
 	function endSong():Void
 	{
 		if (playedEndCutscene == false && isStoryMode == true){
-			if (!FileSystem.exists('mods/' + SLModding.curLoaded + '/cutscenes/' + curSong + '/end.mp4')){
+			if (!SLModding.fileExists('mods/' + SLModding.curLoaded + '/cutscenes/' + curSong + '/end.mp4')){
 				switch (curSong.toLowerCase())
 				{
 					case 'pico':
@@ -2481,7 +2544,7 @@ class PlayState extends MusicBeatState
 							}
 						}
 					}
-					else // regular notes?
+					else
 					{
 						if (left || up || down || right) {
 							noteCheck(controlArray[daNote.noteData], daNote);
@@ -2495,6 +2558,14 @@ class PlayState extends MusicBeatState
 					}
 				}
 			}
+
+			if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && !up && !down && !right && !left && !perfectMode)
+				{
+					if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
+					{
+						boyfriend.playAnim('idle');
+					}
+				}
 	
 			if ((up || right || down || left) && !boyfriend.stunned && generatedMusic)
 			{
@@ -2520,14 +2591,6 @@ class PlayState extends MusicBeatState
 						}
 					}
 				});
-			}
-	
-			if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && !up && !down && !right && !left)
-			{
-				if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
-				{
-					boyfriend.playAnim('idle');
-				}
 			}
 	
 			playerStrums.forEach(function(spr:FlxSprite)
@@ -2738,6 +2801,7 @@ class PlayState extends MusicBeatState
 	
 	function playCutscene(name:String, isPath:Bool = false)
 	{
+		#if desktop
 		inCutscene = true;
 		trace(Paths.video(name));
 		var video:VideoHandler = new VideoHandler();
@@ -2749,10 +2813,14 @@ class PlayState extends MusicBeatState
 			video.playVideo(Paths.video(name));
 		else
 			video.playVideo(name);
+		#else
+		startCountdown();
+		#end
 	}
 	
 	function playEndCutscene(name:String, isPath:Bool = false)
 	{
+		#if desktop
 		//Doesn't check if the song is ending sense it gets called to play WHILE the song is ending.
 		inCutscene = true;
 
@@ -2773,6 +2841,9 @@ class PlayState extends MusicBeatState
 			video.playVideo(Paths.video(name));
 		else
 			video.playVideo(name);
+		#else
+		endSong();
+		#end
 	}
 
 	function updateCharacter(isBF:Bool = false){
@@ -2781,7 +2852,7 @@ class PlayState extends MusicBeatState
 				var daList:Array<String>;
 
 				if (dad.isMod)
-					daList = File.getContent("mods/" + SLModding.curLoaded + "/images/characters/" + dad.curCharacter + "/character.txt").trim().split('\n');
+					daList = SLModding.getContent("mods/" + SLModding.curLoaded + "/images/characters/" + dad.curCharacter + "/character.txt").trim().split('\n');
 				else
 					daList = Paths.character(dad.curCharacter).trim().split('\n');
 					
@@ -2803,7 +2874,7 @@ class PlayState extends MusicBeatState
 				var daList:Array<String>;
 
 				if (boyfriend.isMod)
-					daList = File.getContent("mods/" + SLModding.curLoaded + "/images/characters/" + boyfriend.curCharacter + "/character.txt").trim().split('\n');
+					daList = SLModding.getContent("mods/" + SLModding.curLoaded + "/images/characters/" + boyfriend.curCharacter + "/character.txt").trim().split('\n');
 				else
 					daList = Paths.character(boyfriend.curCharacter).trim().split('\n');
 					
@@ -2981,7 +3052,7 @@ class PlayState extends MusicBeatState
 				gfCharacterArray = daList;
 			}
 			else{
-				daList = File.getContent("mods/" + SLModding.curLoaded + "/images/characters/" + type + "/character.txt").trim().split('\n');
+				daList = SLModding.getContent("mods/" + SLModding.curLoaded + "/images/characters/" + type + "/character.txt").trim().split('\n');
 
 				for (i in 0...daList.length){
 					daList[i] = daList[i].trim();

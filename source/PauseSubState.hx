@@ -1,5 +1,8 @@
 package;
 
+#if desktop
+import Discord.DiscordClient;
+#end
 import Controls.Control;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -17,7 +20,7 @@ class PauseSubState extends MusicBeatSubstate
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
-	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Exit to menu'];
+	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Exit to menu', 'Charter', 'Character Debug'];
 	var curSelected:Int = 0;
 
 	var pauseMusic:FlxSound;
@@ -121,6 +124,18 @@ class PauseSubState extends MusicBeatSubstate
 				case "Exit to menu":
 					SLModding.curLoaded = null;
 					FlxG.switchState(new MainMenuState());
+				case 'Charter':
+					FlxG.switchState(new ChartingState());
+
+					#if desktop
+					DiscordClient.changePresence("Chart Editor", null, null, true);
+					#end
+				case 'Character Debug':
+					FlxG.switchState(new AnimationDebug(PlayState.SONG.player2));
+
+					#if desktop
+					DiscordClient.changePresence("Character Debugging", null, null, true);
+					#end
 			}
 		}
 

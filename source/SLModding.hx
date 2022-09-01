@@ -1,8 +1,17 @@
 package;
 
+import openfl.media.Sound;
+import lime.app.Application;
+import lime.system.System;
+import flixel.FlxG;
+import cpp.StdString;
+import openfl.Assets;
 import sys.FileSystem;
 import sys.io.File;
 import haxe.Json;
+#if android
+import com.player03.android6.Permissions;
+#end
 
 class SLModding {
 
@@ -18,11 +27,18 @@ class SLModding {
             isInitialized = false;
             modsArray = [];
         }
-        
-        for (modFolder in FileSystem.readDirectory("mods/")){
+
+        #if android
+        var permission:String = Permissions.READ_EXTERNAL_STORAGE;
+
+		if(!Permissions.hasPermission(permission) && FlxG.save.data.allowMods)
+			FlxG.save.data.allowMods = !FlxG.save.data.allowMods;
+        #end
+
+        for (modFolder in readDirectory("mods/")){
             trace(modFolder);
 
-            if (FileSystem.exists('mods/$modFolder/mod.json')){
+            if (fileExists('mods/$modFolder/mod.json')){
                 modsArray.push(modFolder);
                 validMods++;
             }
@@ -36,7 +52,7 @@ class SLModding {
                 }));*/
             }
         }
-
+        
         if (validMods > 0)
             isInitialized = true;
         else
@@ -55,11 +71,52 @@ class SLModding {
             return 'mods/$mod/';
     }
 
+    static public function getContent(path:String){
+        #if desktop
+        return File.getContent(path);
+        #elseif mobile
+        return File.getContent(System.documentsDirectory + 'SublimeEngine/' + path);
+        #end
+    }
+
+    static public function fileExists(path:String){
+        #if desktop
+        return FileSystem.exists(path);
+        #elseif mobile
+        return FileSystem.exists(System.documentsDirectory + 'SublimeEngine/' + path);
+        #end
+    }
+
+    static public function readDirectory(path:String){
+        #if desktop
+        return FileSystem.readDirectory(path);
+        #elseif mobile
+        trace(System.documentsDirectory + 'SublimeEngine/' + path);
+        return FileSystem.readDirectory(System.documentsDirectory + 'SublimeEngine/' + path);
+        #end
+    }
+
+    static public function getBitmap(path:String){
+        #if desktop
+        return openfl.display.BitmapData.fromFile(path);
+        #elseif mobile
+        return openfl.display.BitmapData.fromFile(System.documentsDirectory + 'SublimeEngine/' + path);
+        #end
+    }
+
+    static public function getSound(path:String){
+        #if desktop
+        return Sound.fromFile(path);
+        #elseif mobile
+        return Sound.fromFile(System.documentsDirectory + 'SublimeEngine/' + path);
+        #end
+    }
+
     static public function parseModValue(wanted:String, mod:String = ''){
         if (mod == '')
             mod = curLoaded;
 
-        var jsonString:String = File.getContent('mods/$mod/mod.json');
+        var jsonString:String = getContent('mods/$mod/mod.json');
         var actualJson = Json.parse(jsonString);
 
         switch (wanted){
