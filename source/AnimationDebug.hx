@@ -147,22 +147,10 @@ class AnimationDebug extends MusicBeatState
 			camFollow.velocity.set();
 		}
 
-		#if desktop
-		if (controls.UP_P && !FlxG.keys.anyPressed([SHIFT]))
-		{
-			curAnim -= 1;
-		}
-
-		if (controls.DOWN_P && !FlxG.keys.anyPressed([SHIFT]))
-		{
-			curAnim += 1;
-		}
-		#elseif mobile
 		if (controls.ACCEPT)
 			{
 				curAnim += 1;
 			}
-		#end
 
 		if (curAnim < 0)
 			curAnim = animList.length - 1;
@@ -170,30 +158,12 @@ class AnimationDebug extends MusicBeatState
 		if (curAnim >= animList.length)
 			curAnim = 0;
 
-		#if mobile
 		if (controls.ACCEPT){
 			char.playAnim(animList[curAnim]);
 
 			updateTexts();
 			genBoyOffsets(false);
 		}
-		#elseif desktop
-		if (controls.UP_P)
-			{
-				char.playAnim(animList[curAnim]);
-	
-				updateTexts();
-				genBoyOffsets(false);
-			}
-	
-			if (controls.DOWN_P)
-			{
-				char.playAnim(animList[curAnim]);
-	
-				updateTexts();
-				genBoyOffsets(false);
-			}
-		#end
 
 		var upP = controls.UP_P;
 		var rightP = controls.RIGHT_P;
@@ -205,25 +175,6 @@ class AnimationDebug extends MusicBeatState
 		if (holdShift)
 			multiplier = 10;
 
-		#if desktop
-		if (upP && FlxG.keys.anyPressed([SHIFT]) || rightP && FlxG.keys.anyPressed([SHIFT]) || downP && FlxG.keys.anyPressed([SHIFT]) || leftP && FlxG.keys.anyPressed([SHIFT])){
-			{
-				updateTexts();
-				if (upP)
-					char.animOffsets.get(animList[curAnim])[1] += 1 * multiplier;
-				if (downP)
-					char.animOffsets.get(animList[curAnim])[1] -= 1 * multiplier;
-				if (leftP)
-					char.animOffsets.get(animList[curAnim])[0] += 1 * multiplier;
-				if (rightP)
-					char.animOffsets.get(animList[curAnim])[0] -= 1 * multiplier;
-	
-				updateTexts();
-				genBoyOffsets(false);
-				char.playAnim(animList[curAnim]);
-			}
-		}
-		#elseif mobile
 		if (upP || rightP || downP || leftP){
 			{
 				updateTexts();
@@ -241,7 +192,6 @@ class AnimationDebug extends MusicBeatState
 				char.playAnim(animList[curAnim]);
 			}
 		}
-		#end
 
 		super.update(elapsed);
 

@@ -133,7 +133,7 @@
 	<haxedev set='webgl' />
 
 	<!--Video Shit-->
-	<haxelib name="hxCodec"/>
+	<haxelib name="hxCodec" if="desktop || android" />
 	<haxedef name="HXC_DEBUG_TRACE" if="debug" />
 
 	<!--In case you want to use the addons package-->
@@ -146,6 +146,7 @@
 	<haxelib name="discord_rpc" if="desktop"/>
 	<!-- <haxelib name="hxcpp-debug-server" if="desktop"/> -->
 	<haxelib name="android6permissions" if="android"></haxelib>
+	<haxelib name="extension-androidtools" if="android" />
 
 	<!-- <haxelib name="markdown" /> -->
 	<!-- <haxelib name="HtmlParser" /> -->

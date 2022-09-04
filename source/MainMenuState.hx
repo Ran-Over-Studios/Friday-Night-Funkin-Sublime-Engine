@@ -168,10 +168,7 @@ class MainMenuState extends MusicBeatState
 										switch (daChoice)
 										{
 											case 'story mode':
-												if (!SLModding.isInitialized)
-													FlxG.switchState(new StoryMenuState());
-												else
-													FlxG.switchState(new StorySelectionState());
+												FlxG.switchState(new StorySelectionState());
 												trace("Story Menu Selected");
 											case 'freeplay':
 												FlxG.switchState(new FreeplayState());
@@ -189,10 +186,7 @@ class MainMenuState extends MusicBeatState
 								switch (daChoice)
 								{
 									case 'story mode':
-										if (!SLModding.isInitialized)
-											FlxG.switchState(new StoryMenuState());
-										else
-											FlxG.switchState(new StorySelectionState());
+										FlxG.switchState(new StoryMenuState());
 										trace("Story Menu Selected");
 									case 'freeplay':
 										FlxG.switchState(new FreeplayState());

@@ -135,7 +135,7 @@ class PlayState extends MusicBeatState
 
 	var songLength:Float = 1;
 
-	var sicks:Int = 0; var goods:Int = 0; var bads:Int = 0; var shits:Int = 0; var misses:Int = 0;
+	var perfects:Int = 0; var sicks:Int = 0; var goods:Int = 0; var bads:Int = 0; var shits:Int = 0; var misses:Int = 0;
 
 	var underlay:FlxSprite;
 
@@ -1706,7 +1706,7 @@ class PlayState extends MusicBeatState
 		#end
 
 		scoreTxt.text = 'Score: $songScore • Misses: $misses • Accuracy: ${calculateRating()} • Combo: $combo';
-		rankTxt.text = 'Sicks • $sicks\nGoods • $goods\nBads • $bads\nShits • $shits';
+		rankTxt.text = 'Perfects • $perfects\nSicks • $sicks\nGoods • $goods\nBads • $bads\nShits • $shits';
 
 		//songBarTimeTxt.text = '${Math.floor((Conductor.songPosition / 1000) / 60)}:${Math.floor((Conductor.songPosition / 1000) % 60)}';
 		songBarTimeTxt.text = '${(Math.floor((Conductor.songPosition / 1000) / 60))}:${(Math.floor((Conductor.songPosition / 1000) % 60) < 10 ? '0' : '') + Math.floor((Conductor.songPosition / 1000) % 60)}'.replace('\n', '');
@@ -2146,7 +2146,7 @@ class PlayState extends MusicBeatState
 					boyfriend.holdTimer = 0;
 
 					if (!daNote.isSustainNote){
-						sicks++;
+						perfects++;
 						combo++;
 					}
 
@@ -2385,30 +2385,110 @@ class PlayState extends MusicBeatState
 		//
 
 		var rating:FlxSprite = new FlxSprite();
-		var score:Int = 350;
+		var score:Int = 300;
 
 		var daRating:String = "sick";
 
-		if (noteDiff > Conductor.safeZoneOffset * 0.9)
-		{
-			daRating = 'shit';
-			shits++;
-			score = 50;
-		}
-		else if (noteDiff > Conductor.safeZoneOffset * 0.75)
-		{
-			daRating = 'bad';
-			bads++;
-			score = 100;
-		}
-		else if (noteDiff > Conductor.safeZoneOffset * 0.25)
-		{
-			daRating = 'good';
-			goods++;
-			score = 200;
+		if (FlxG.save.data.advanceJudement == null)
+			FlxG.save.data.advanceJudement = false;
+
+		if (!FlxG.save.data.useClassicRating){
+			if (noteDiff > Conductor.safeZoneOffset * 0.65)
+				{
+					daRating = 'shit';
+					shits++;
+					score = 50;
+	
+					if (FlxG.save.data.advanceJudement)
+						health -= 0.25;
+					else
+						health += 0.1;
+				}
+				else if (noteDiff > Conductor.safeZoneOffset * 0.55)
+				{
+					daRating = 'bad';
+					bads++;
+					score = 100;
+
+					if (FlxG.save.data.advanceJudement)
+						health -= 0.15;
+					else
+						health += 0.1;
+				}
+				else if (noteDiff > Conductor.safeZoneOffset * 0.35)
+				{
+					daRating = 'good';
+					goods++;
+					score = 200;
+
+					if (FlxG.save.data.advanceJudement)
+						health -= 0.05;
+					else
+						health += 0.1;
+				}
+				else if (noteDiff > Conductor.safeZoneOffset * 0.15){
+					daRating = 'sick';
+					sicks++;
+					score = 300;
+	
+					health += 0.1;
+				}
+				else{
+					daRating = 'perfect';
+					perfects++;
+					score = 400;
+	
+					health += 0.15;
+				}
 		}
 		else{
-			sicks++;
+			if (noteDiff > Conductor.safeZoneOffset * 0.75)
+				{
+					daRating = 'shit';
+					score = 50;
+					shits++;
+
+					if (FlxG.save.data.advanceJudement)
+						health -= 0.25;
+					else
+						health += 0.1;
+				}
+				else if (noteDiff > Conductor.safeZoneOffset * 0.6)
+				{
+					daRating = 'bad';
+					score = 100;
+					bads++;
+
+					if (FlxG.save.data.advanceJudement)
+						health -= 0.15;
+					else
+						health += 0.1;
+				}
+				else if (noteDiff > Conductor.safeZoneOffset * 0.35)
+				{
+					daRating = 'good';
+					score = 200;
+					goods++;
+
+					if (FlxG.save.data.advanceJudement)
+						health -= 0.05;
+					else
+						health += 0.1;
+				}
+				else if (noteDiff > Conductor.safeZoneOffset * 0.2){ // not actually part of the og rating system
+					daRating = 'sick';
+					sicks++;
+					score = 300;
+	
+					health += 0.1;
+				}
+				else{
+					daRating = 'perfect';
+					perfects++;
+					score = 400;
+	
+					health += 0.15;
+				}
 		}
 
 		daNote.daRating = daRating;
@@ -2490,74 +2570,74 @@ class PlayState extends MusicBeatState
 			var controlArray:Array<Bool> = [leftP, downP, upP, rightP];
 	
 			// FlxG.watch.addQuick('asdfa', upP);
-			if ((upP || rightP || downP || leftP) && !boyfriend.stunned && generatedMusic)
-			{
-				boyfriend.holdTimer = 0;
-	
-				var possibleNotes:Array<Note> = [];
-	
-				var ignoreList:Array<Int> = [];
-	
-				notes.forEachAlive(function(daNote:Note)
+			if ((upP || rightP || downP || leftP) && !boyfriend.stunned && generatedMusic) // i tried to redo this but i dont even
 				{
-					if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit)
+					boyfriend.holdTimer = 0;
+		
+					var possibleNotes:Array<Note> = [];
+		
+					var ignoreList:Array<Int> = [];
+		
+					notes.forEachAlive(function(daNote:Note)
 					{
-						// the sorting probably doesn't need to be in here? who cares lol
-						possibleNotes.push(daNote);
-						possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
-	
-						ignoreList.push(daNote.noteData);
-					}
-				});
-	
-				if (possibleNotes.length > 0)
-				{
-					var daNote = possibleNotes[0];
-	
-					if (perfectMode)
-						noteCheck(true, daNote);
-	
-					// Jump notes
-					if (possibleNotes.length >= 2)
-					{
-						if (possibleNotes[0].strumTime == possibleNotes[1].strumTime)
+						if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit)
 						{
-							for (coolNote in possibleNotes)
+							// the sorting probably doesn't need to be in here? who cares lol
+							possibleNotes.push(daNote);
+							possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
+		
+							ignoreList.push(daNote.noteData);
+						}
+					});
+		
+					if (possibleNotes.length > 0)
+					{
+						var daNote = possibleNotes[0];
+		
+						if (perfectMode)
+							noteCheck(true, daNote);
+		
+						// Jump notes
+						if (possibleNotes.length >= 2)
+						{
+							if (possibleNotes[0].strumTime == possibleNotes[1].strumTime)
 							{
-								if (controlArray[coolNote.noteData])
-									goodNoteHit(coolNote);
+								for (coolNote in possibleNotes)
+								{
+									if (controlArray[coolNote.noteData])
+										goodNoteHit(coolNote);
+								}
+							}
+							else if (possibleNotes[0].noteData == possibleNotes[1].noteData)
+							{
+								if (left || up || down || right) {
+									noteCheck(controlArray[daNote.noteData], daNote);
+								}
+							}
+							else
+							{
+								for (coolNote in possibleNotes)
+								{
+									if (left || up || down || right) {
+										noteCheck(controlArray[coolNote.noteData], coolNote);
+									}
+								}
 							}
 						}
-						else if (possibleNotes[0].noteData == possibleNotes[1].noteData)
+						else
 						{
 							if (left || up || down || right) {
 								noteCheck(controlArray[daNote.noteData], daNote);
 							}
 						}
-						else
-						{
-							for (coolNote in possibleNotes)
-							{
-								if (left || up || down || right) {
-									noteCheck(controlArray[coolNote.noteData], coolNote);
-								}
-							}
-						}
 					}
 					else
 					{
-						if (left || up || down || right) {
-							noteCheck(controlArray[daNote.noteData], daNote);
+						if (!FlxG.save.data.ghostTap){
+							badNoteCheck();
 						}
 					}
 				}
-				else
-				{
-					if (!FlxG.save.data.ghostTap){
-						badNoteCheck();
-					}
-				}
-			}
 
 			if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && !up && !down && !right && !left && !perfectMode)
 				{
@@ -2715,11 +2795,6 @@ class PlayState extends MusicBeatState
 				combo += 1;
 			}
 
-			if (note.noteData >= 0)
-				health += 0.023;
-			else
-				health += 0.004;
-
 			switch (note.noteData)
 			{
 				case 0:
@@ -2743,7 +2818,7 @@ class PlayState extends MusicBeatState
 			note.wasGoodHit = true;
 			vocals.volume = 1;
 
-			if (note.wasGoodHit && note.daRating == 'sick')
+			if (note.wasGoodHit && note.daRating == 'perfect')
 				noteSplash(note.x, note.y, note.noteData, false);
 
 			if (!note.isSustainNote)
@@ -2757,34 +2832,27 @@ class PlayState extends MusicBeatState
 
 	public function calculateRating() {
 		if (misses == 0) {
-			if (goods < 1 && bads < 1 && shits < 1 && songScore != 0){
-				return 'PERFECT! (MFC) (${calculateLetter()} | ${calcAcc()})';
+			if (perfects > 0 && sicks >= 0 && goods < 1 && bads < 1 && shits < 1 && songScore != 0){
+				return 'PERFECT! (MFC) (${calcAcc()})';
 			} else {
 			   if (songScore == 0) {
-				return 'N/A (${calculateLetter()} | ${calcAcc()})';
+				return 'N/A (${calcAcc()})';
 			   } else {
-				return 'SICK! (FC) (${calculateLetter()} | ${calcAcc()})';
+				return 'SICK! (FC) (${calcAcc()})';
 			   }
 			}
 		}
 		else if (misses > 0 && misses <= 10) {
-			return 'GOOD! (SDM) (${calculateLetter()} | ${calcAcc()})';
+			return 'GOOD! (SDM) (${calcAcc()})';
 		}
 		else {
-			return 'BAD (Clear) (${calculateLetter()} | ${calcAcc()})';
+			return 'BAD (Clear) (${calcAcc()})';
 		}
-	}
-
-	function calculateLetter() {
-		if (sicks > 0 || goods > 0 || bads > 0 || shits > 0 || misses > 0)
-			return '${sicks > goods ? 'A' : ''}${sicks > bads ? 'A' : ''}${sicks > shits ? 'A': ''}${sicks > misses ? 'A' : ''}';
-		else
-			return '?';
 	}
 
 	function calcAcc() {
-		if (sicks > 0 || goods > 0 || bads > 0 || shits > 0 || misses > 0)
-			return '${Math.floor((((sicks + goods + bads + shits) / 100) / ((misses + sicks + goods + bads + shits) / 100)) * 100)}%';
+		if (perfects > 0 || sicks > 0 || goods > 0 || bads > 0 || shits > 0 || misses > 0)
+			return '${Math.floor((((perfects + sicks + goods + bads + shits) / 100) / ((misses + perfects + sicks + goods + bads + shits) / 100)) * 100)}%';
 		else
 			return '?';
 	}

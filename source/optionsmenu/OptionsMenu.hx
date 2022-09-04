@@ -26,6 +26,8 @@ class OptionsMenu extends MusicBeatState {
 	
 	var optionsGroup:FlxTypedGroup<TextOption>;
 
+	var optionDetails:FlxText;
+
 	override function create() {
 		background = new FlxSprite(0, 0, Paths.image('menuBGBlue'));
 		background.scrollFactor.x = 0;
@@ -40,6 +42,12 @@ class OptionsMenu extends MusicBeatState {
 		generateOptions();
 
 		add(optionsGroup);
+
+		optionDetails = new FlxText(0, 0, FlxG.width, "");
+		optionDetails.setFormat("PhantomMuff 1.5", 32, 0xFF000000, "center");
+		optionDetails.setBorderStyle(FlxTextBorderStyle.OUTLINE, 0xFFFFFFFF, 2, 1);
+		optionDetails.scrollFactor.set();
+		add(optionDetails);
 
 		camFollow = new FlxSprite(0, 0).makeGraphic(Std.int(optionsGroup.members[0].width), Std.int(optionsGroup.members[0].height), 0xAAFF0000);
 		camFollow.y = optionsGroup.members[0].y;
@@ -86,6 +94,33 @@ class OptionsMenu extends MusicBeatState {
 		if (FlxG.save.data.allowMods == null)
 			FlxG.save.data.allowMods = true;
 		#end
+
+		switch (optionsGroup.members[curSelected].text.toLowerCase().substr(0, optionsGroup.members[curSelected].text.toLowerCase().indexOf(" ", 0))){
+			case 'ghost-tapping':
+				optionDetails.text = "Disables missing for when you don't hit a note";
+			case 'downscroll':
+				optionDetails.text = "Puts the Strumline at the bottom";
+			case 'middlescroll':
+				optionDetails.text = "Centers the Strumline";
+			case 'hurtful':
+				optionDetails.text = "If the Note Rating is below \"Sick\" you will loose health"; // look i had trouble thinking of a good option name, take it or leave it.
+			case 'classic':
+				optionDetails.text = "Use the original FNFSL Rating System (Easier, Not Recommended)";
+			case 'botplay':
+				optionDetails.text = "Plays the game for you";
+			case 'allow': //allow modding
+				optionDetails.text = "Toggle Mods";
+			case 'lane-underlay':
+				optionDetails.text = "Puts a underlay on the Strumline";
+			case 'distractions':
+				optionDetails.text = "Toggle Distractions";
+			case 'epilepsy':
+				optionDetails.text = "Disables most flashing lights";
+			case 'show':
+				optionDetails.text = "Show the Outdated Screen";
+			default:
+				optionDetails.text = "";
+		}
 	}
 
 	function generateOptions(theOptionGroup:String = null){
@@ -114,6 +149,8 @@ class OptionsMenu extends MusicBeatState {
 				optionArray = [
 					"Keybinds",
 					'Ghost-tapping ${FlxG.save.data.ghostTap ? 'ON' : 'OFF'}',
+					'Hurtful Ratings ${FlxG.save.data.advanceJudement ? 'ON' : 'OFF'}',
+					'Classic Rating System ${FlxG.save.data.useClassicRating ? 'ON' : 'OFF'}',
 					'Downscroll ${FlxG.save.data.downScroll ? 'ON' : 'OFF'}',
 					'Middlescroll ${FlxG.save.data.middleScroll ? 'ON' : 'OFF'}',
 					'Botplay ${FlxG.save.data.botplay ? 'ON' : 'OFF'}',
@@ -127,7 +164,7 @@ class OptionsMenu extends MusicBeatState {
 				    'Lane-Underlay ${FlxG.save.data.laneUnderlay ? 'ON' : 'OFF'}',
 				    'Distractions ${FlxG.save.data.noDistractions ? 'OFF' : 'ON'}',
 				    'Epilepsy Mode ${FlxG.save.data.epilepsyMode ? 'ON' : 'OFF'}',
-					'Show Outdated Screen ${FlxG.save.data.showOutdatedScreen ? 'ON' : 'OFF'}'
+					'Show Outdated Screen ${FlxG.save.data.disableOutdatedScreen ? 'OFF' : 'ON'}'
 				];
 
 				optionSelectionProperties = [0, 0, 0, 0];
@@ -159,6 +196,10 @@ class OptionsMenu extends MusicBeatState {
 						FlxG.save.data.botplay = !FlxG.save.data.botplay;
 					case 'allow': // allow modding
 						FlxG.save.data.allowMods = !FlxG.save.data.allowMods;
+					case 'hurtful':
+						FlxG.save.data.advanceJudement = !FlxG.save.data.advanceJudement;
+					case 'classic':
+						FlxG.save.data.useClassicRating = !FlxG.save.data.useClassicRating;
 					// graphics
 					case 'lane-underlay':
 						FlxG.save.data.laneUnderlay = !FlxG.save.data.laneUnderlay;
@@ -167,7 +208,7 @@ class OptionsMenu extends MusicBeatState {
 					case 'epilepsy':
 						FlxG.save.data.epilepsyMode = !FlxG.save.data.epilepsyMode;
 					case 'show': // show outdated screen
-						FlxG.save.data.showOutdatedScreen = !FlxG.save.data.showOutdatedScreen;
+						FlxG.save.data.disableOutdatedScreen = !FlxG.save.data.disableOutdatedScreen;
 				}
 
 				generateOptions(curMenu); //reload the current menu

@@ -302,11 +302,56 @@ class ChartingState extends MusicBeatState
 		var stagelist:Array<String> = [];
 		var noteskins:Array<String>;
 		
-		dadCharacters= CoolUtil.coolTextFile(Paths.txt('dadList'));
-		bfCharacters = CoolUtil.coolTextFile(Paths.txt('bfList'));
-		gfCharacters = CoolUtil.coolTextFile(Paths.txt('gfList'));
+		if (SLModding.curLoaded != null || SLModding.curLoaded != ''){
+			var customCharacters:Array<String> = [];
 
-		stagelist = CoolUtil.coolTextFile(Paths.txt('stageList'));
+			for (character in CoolUtil.coolTextFile(Paths.txt('dadList'))){
+				if (character != null)
+					customCharacters.push(character);
+			}
+
+			for (character in CoolUtil.coolTextFile(Paths.txt('bfList'))){
+				if (character != null)
+					customCharacters.push(character);
+			}
+
+			for (character in CoolUtil.coolTextFile(Paths.txt('gfList'))){
+				if (character != null && character != 'none')
+					customCharacters.push(character);
+			}
+
+			for (character in SLModding.readDirectory(SLModding.generatePath(SLModding.curLoaded, "images/characters/"))){
+				if (character != null)
+					customCharacters.push(character);
+			}
+
+			dadCharacters = customCharacters;
+			bfCharacters = customCharacters;
+			gfCharacters = customCharacters;
+
+			var customStages:Array<String> = [];
+
+			for (stage in CoolUtil.coolTextFile(Paths.txt('stageList'))){
+				if (stage != null)
+					customStages.push(stage);
+			}
+
+			for (stage in SLModding.readDirectory(SLModding.generatePath(SLModding.curLoaded, "images/stages/"))){
+				if (stage != null)
+					customStages.push(stage);
+			}
+
+			customStages.push('void'); // bonus stage
+
+			stagelist = customStages;
+		}
+		else{
+			dadCharacters= CoolUtil.coolTextFile(Paths.txt('dadList'));
+			bfCharacters = CoolUtil.coolTextFile(Paths.txt('bfList'));
+			gfCharacters = CoolUtil.coolTextFile(Paths.txt('gfList'));
+			stagelist = CoolUtil.coolTextFile(Paths.txt('stageList'));
+		}
+
 		noteskins = CoolUtil.coolTextFile(Paths.txt('noteskinList'));
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(bfCharacters, true), function(character:String)
