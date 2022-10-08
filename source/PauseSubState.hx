@@ -30,10 +30,10 @@ class PauseSubState extends MusicBeatSubstate
 		super();
 
 		if (FlxG.save.data.debugMode) {
-			if (!menuItems.contains('Charter') {
+			if (!menuItems.contains('Charter')) {
 			    menuItems.insert('Charter');
 		        }
-			if (!menuItems.contains('Character Debug') {
+			if (!menuItems.contains('Character Debug')) {
 			    menuItems.insert('Character Debug');
 		        }
 		}
