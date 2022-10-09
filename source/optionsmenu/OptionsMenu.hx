@@ -118,6 +118,8 @@ class OptionsMenu extends MusicBeatState {
 				optionDetails.text = "Disables most flashing lights";
 			case 'show':
 				optionDetails.text = "Show the Outdated Screen";
+                        case 'debug':
+                                optionDetails.text = "Allows you to enter the Chart Editor and other debug editors.";
 			default:
 				optionDetails.text = "";
 		}
@@ -154,7 +156,8 @@ class OptionsMenu extends MusicBeatState {
 					'Downscroll ${FlxG.save.data.downScroll ? 'ON' : 'OFF'}',
 					'Middlescroll ${FlxG.save.data.middleScroll ? 'ON' : 'OFF'}',
 					'Botplay ${FlxG.save.data.botplay ? 'ON' : 'OFF'}',
-					'Allow Modding ${FlxG.save.data.allowMods ? 'ON' : 'OFF'}'
+					'Allow Modding ${FlxG.save.data.allowMods ? 'ON' : 'OFF'}',
+					'Debug Mode ${FlxG.save.data.debugMode ? 'ON' : 'OFF'}'
 				];
 
 				optionSelectionProperties = [2, 0, 0, 0, 0, 0];
@@ -209,6 +212,8 @@ class OptionsMenu extends MusicBeatState {
 						FlxG.save.data.epilepsyMode = !FlxG.save.data.epilepsyMode;
 					case 'show': // show outdated screen
 						FlxG.save.data.disableOutdatedScreen = !FlxG.save.data.disableOutdatedScreen;
+                                        case 'debug':
+                                                FlxG.save.data.debugMode = !FlxG.save.data.debugMode;
 				}
 
 				generateOptions(curMenu); //reload the current menu

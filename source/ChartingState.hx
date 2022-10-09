@@ -1386,13 +1386,10 @@ class ChartingState extends MusicBeatState
 	{
 		var difficulty:String = "";
 
-		switch(diff){
-			case 0:
-				difficulty = "-easy";
-			case 1:
-				difficulty = "";
-			case 2:
-				difficulty = "-hard";
+                if (CoolUtil.difficultyArray.contains('NORMAL') && CoolUtil.difficultyArray[diff] == 'NORMAL') {
+			difficulty = '';
+		} else {
+			difficulty = '-' + CoolUtil.difficultyArray[diff].toLowerCase();
 		}
 
 		PlayState.SONG = Song.loadFromJson(song.toLowerCase() + difficulty, song.toLowerCase());

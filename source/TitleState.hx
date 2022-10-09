@@ -238,8 +238,6 @@ class TitleState extends MusicBeatState
 
 		FlxG.mouse.visible = false;
 
-		starting = false;
-
 		if (initialized)
 			skipIntro();
 		else
@@ -276,12 +274,16 @@ class TitleState extends MusicBeatState
 			FlxG.fullscreen = !FlxG.fullscreen;
 		}
 
-		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER;
+		var pressedEnter:Bool = false;
+                
+		if (FlxG.keys.justPressed.ENTER && !starting) {
+			pressedEnter = true;
+		}
 
 		#if mobile
 		for (touch in FlxG.touches.list)
 		{
-			if (touch.justPressed)
+			if (touch.justPressed && !starting)
 			{
 				pressedEnter = true;
 			}
@@ -290,7 +292,7 @@ class TitleState extends MusicBeatState
 
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 
-		if (gamepad != null)
+		if (gamepad != null && !starting)
 		{
 			if (gamepad.justPressed.START)
 				pressedEnter = true;
@@ -414,6 +416,7 @@ class TitleState extends MusicBeatState
 		{
 			case 1:
 				createCoolText(['SpunBlue']);
+                                starting = false;
 				// createCoolText(['thepercentageguy']);
 			// credTextShit.visible = true;
 			case 3:

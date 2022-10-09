@@ -20,7 +20,7 @@ class PauseSubState extends MusicBeatSubstate
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
-	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Exit to menu', 'Charter', 'Character Debug'];
+	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Exit to menu'];
 	var curSelected:Int = 0;
 
 	var pauseMusic:FlxSound;
@@ -28,6 +28,16 @@ class PauseSubState extends MusicBeatSubstate
 	public function new(x:Float, y:Float)
 	{
 		super();
+
+		if (FlxG.save.data.debugMode) {
+			if (!menuItems.contains('Charter')) {
+			    menuItems.push('Charter');
+		        }
+			if (!menuItems.contains('Character Debug')) {
+			    menuItems.push('Character Debug');
+		        }
+		}
+
 
 		pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast'), true, true);
 		pauseMusic.volume = 0;
@@ -104,10 +114,12 @@ class PauseSubState extends MusicBeatSubstate
 
 		if (upP)
 		{
+                        FlxG.sound.play(Paths.sound('scrollMenu'));
 			changeSelection(-1);
 		}
 		if (downP)
 		{
+                        FlxG.sound.play(Paths.sound('scrollMenu'));
 			changeSelection(1);
 		}
 

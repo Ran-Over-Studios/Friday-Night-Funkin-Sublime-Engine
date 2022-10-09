@@ -105,6 +105,17 @@ class MainMenuState extends MusicBeatState
 
 	var selectedSomethin:Bool = false;
 
+	function loadState(choice:String) {
+		switch (choice) {
+			case 'story mode':
+				FlxG.switchState(new StorySelectionState());
+			case 'freeplay':
+				FlxG.switchState(new FreeplayState());
+			case 'options':
+				FlxG.switchState(new optionsmenu.OptionsMenu());
+		}
+	}
+
 	override function update(elapsed:Float)
 	{
 		if (FlxG.sound.music.volume < 0.8)
@@ -165,37 +176,13 @@ class MainMenuState extends MusicBeatState
 									{
 										var daChoice:String = optionShit[curSelected];
 		
-										switch (daChoice)
-										{
-											case 'story mode':
-												FlxG.switchState(new StorySelectionState());
-												trace("Story Menu Selected");
-											case 'freeplay':
-												FlxG.switchState(new FreeplayState());
-		
-												trace("Freeplay Menu Selected");
-		
-											case 'options':
-												FlxG.switchState(new optionsmenu.OptionsMenu());
-										}
+										loadState(daChoice);
 									});
 							}
 							else {
 								var daChoice:String = optionShit[curSelected];
 		
-								switch (daChoice)
-								{
-									case 'story mode':
-										FlxG.switchState(new StoryMenuState());
-										trace("Story Menu Selected");
-									case 'freeplay':
-										FlxG.switchState(new FreeplayState());
-
-										trace("Freeplay Menu Selected");
-
-									case 'options':
-										FlxG.switchState(new optionsmenu.OptionsMenu());
-								}
+								loadState(daChoice);
 							}
 						}
 					});
@@ -223,14 +210,14 @@ class MainMenuState extends MusicBeatState
 		menuItems.forEach(function(spr:FlxSprite)
 		{
 			spr.animation.play('idle');
+			spr.updateHitbox();
 
 			if (spr.ID == curSelected)
 			{
 				spr.animation.play('selected');
 				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y);
+				spr.centerOffsets();
 			}
-
-			spr.updateHitbox();
 		});
 	}
 }
