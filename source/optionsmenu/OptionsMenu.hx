@@ -47,6 +47,7 @@ class OptionsMenu extends MusicBeatState {
 		optionDetails.setFormat("PhantomMuff 1.5", 32, 0xFF000000, "center");
 		optionDetails.setBorderStyle(FlxTextBorderStyle.OUTLINE, 0xFFFFFFFF, 2, 1);
 		optionDetails.scrollFactor.set();
+		optionDetails.antialiasing = true;
 		add(optionDetails);
 
 		camFollow = new FlxSprite(0, 0).makeGraphic(Std.int(optionsGroup.members[0].width), Std.int(optionsGroup.members[0].height), 0xAAFF0000);
@@ -157,17 +158,18 @@ class OptionsMenu extends MusicBeatState {
 					'Allow Modding ${FlxG.save.data.allowMods ? 'ON' : 'OFF'}'
 				];
 
-				optionSelectionProperties = [2, 0, 0, 0, 0, 0];
+				optionSelectionProperties = [2, 0, 0, 0, 0, 0, 0, 0];
 				curMenu = 'gameplay';
 			case 'graphics':
 				optionArray = [
 				    'Lane-Underlay ${FlxG.save.data.laneUnderlay ? 'ON' : 'OFF'}',
 				    'Distractions ${FlxG.save.data.noDistractions ? 'OFF' : 'ON'}',
 				    'Epilepsy Mode ${FlxG.save.data.epilepsyMode ? 'ON' : 'OFF'}',
+					'Shaders ${FlxG.save.data.disableShaders ? 'DISABLED' : 'ENABLED'}',
 					'Show Outdated Screen ${FlxG.save.data.disableOutdatedScreen ? 'OFF' : 'ON'}'
 				];
 
-				optionSelectionProperties = [0, 0, 0, 0];
+				optionSelectionProperties = [0, 0, 0, 0, 0];
 				curMenu = 'graphics';
 		}
 
@@ -209,6 +211,8 @@ class OptionsMenu extends MusicBeatState {
 						FlxG.save.data.epilepsyMode = !FlxG.save.data.epilepsyMode;
 					case 'show': // show outdated screen
 						FlxG.save.data.disableOutdatedScreen = !FlxG.save.data.disableOutdatedScreen;
+					case 'shaders':
+						FlxG.save.data.disableShaders = !FlxG.save.data.disableShaders;
 				}
 
 				generateOptions(curMenu); //reload the current menu

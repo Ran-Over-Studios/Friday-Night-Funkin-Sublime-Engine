@@ -302,7 +302,9 @@ class ChartingState extends MusicBeatState
 		var stagelist:Array<String> = [];
 		var noteskins:Array<String>;
 		
-		if (SLModding.curLoaded != null || SLModding.curLoaded != ''){
+		trace('Currently loaded Mod: ' + SLModding.curLoaded);
+
+		if (SLModding.curLoaded != null){
 			var customCharacters:Array<String> = [];
 
 			for (character in CoolUtil.coolTextFile(Paths.txt('dadList'))){

@@ -210,8 +210,13 @@ class Note extends FlxSprite
 
 		if (mustPress)
 		{
+			//that moment when the when the
+			var offset:Float = 0.75;
+			if (PlayState.SONG.speed <= 1.5)
+				offset = 1;
+
 			if (strumTime > Conductor.songPosition - Conductor.safeZoneOffset
-				&& strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * 0.75)) //offset
+				&& strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * offset)) //offset
 				canBeHit = true;
 			else
 				canBeHit = false;

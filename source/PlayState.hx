@@ -1,5 +1,7 @@
 package;
 
+import flixel.system.FlxAssets.FlxSoundAsset;
+import shaders.BLOOM;
 import sys.io.File;
 import sys.FileSystem;
 import openfl.media.Sound;
@@ -155,8 +157,12 @@ class PlayState extends MusicBeatState
 	var curShader:String = '';
 
 	var crt:CRT = new CRT();
+	var bloom:BLOOM = new BLOOM();
 
 	public static var perfectMode:Bool = false;
+
+	private var instMusic:FlxSoundAsset;
+	private var vocalsMusic:FlxSoundAsset;
 
 	override public function create()
 	{
@@ -166,7 +172,14 @@ class PlayState extends MusicBeatState
 		if (SLModding.curLoaded != null)
 			isMod = true;
 
-		perfectMode = FlxG.save.data.botplay;
+		if (isMod){
+			instMusic = SLModding.getSound("mods/" + SLModding.curLoaded + "/songs/" + PlayState.SONG.song.toLowerCase() + "/Inst.ogg");
+			vocalsMusic = SLModding.getSound("mods/" + SLModding.curLoaded + "/songs/" + PlayState.SONG.song.toLowerCase() + "/Voices.ogg");
+		}
+		else{
+			instMusic = Paths.inst(PlayState.SONG.song);
+			vocalsMusic = Paths.voices(PlayState.SONG.song);
+		}
 
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
@@ -1324,10 +1337,8 @@ class PlayState extends MusicBeatState
 		previousFrameTime = FlxG.game.ticks;
 		lastReportedPlayheadPosition = 0;
 
-		if (!paused && !isMod)
-			FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 1, false);
-		else if (!paused && isMod)
-			FlxG.sound.playMusic(SLModding.getSound("mods/" + SLModding.curLoaded + "/songs/" + PlayState.SONG.song.toLowerCase() + "/Inst.ogg"), 1, false);
+		if (!paused)
+			FlxG.sound.playMusic(instMusic, 1, false);
 		FlxG.sound.music.onComplete = endSong;
 		vocals.play();
 
@@ -1352,10 +1363,8 @@ class PlayState extends MusicBeatState
 
 		curSong = songData.song;
 
-		if (SONG.needsVoices && inCutscene == false && !isMod)
-			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
-		else if (SONG.needsVoices && inCutscene == false && isMod)
-			vocals = new FlxSound().loadEmbedded(SLModding.getSound("mods/" + SLModding.curLoaded + "/songs/" + PlayState.SONG.song.toLowerCase() + "/Voices.ogg"));
+		if (SONG.needsVoices && inCutscene == false && !paused)
+			vocals = new FlxSound().loadEmbedded(vocalsMusic);
 		else
 			vocals = new FlxSound();
 
