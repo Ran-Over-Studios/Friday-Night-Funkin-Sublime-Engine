@@ -369,10 +369,9 @@ class PlayState extends MusicBeatState
 			}
 		}
 		else{
-			switch (PlayState.SONG.stage){
+			switch (SONG.stage){
 				default:
 					defaultCamZoom = 0.9;
-					curStage = 'stage';
 					var bg:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.image('stageback'));
 					bg.antialiasing = true;
 					bg.scrollFactor.set(0.9, 0.9);
@@ -397,7 +396,6 @@ class PlayState extends MusicBeatState
 					add(stageCurtains);
 				
 				case 'halloween':
-					curStage = 'halloween';
 					halloweenLevel = true;
 	
 					var hallowTex = Paths.getSparrowAtlas('halloween_bg', 'week2');
@@ -412,8 +410,6 @@ class PlayState extends MusicBeatState
 					isHalloween = true;
 	
 				case 'philly':
-					curStage = 'philly';
-	
 					var bg:FlxSprite = new FlxSprite(-100).loadGraphic(Paths.image('philly/sky', 'week3'));
 					bg.scrollFactor.set(0.1, 0.1);
 					add(bg);
@@ -457,8 +453,7 @@ class PlayState extends MusicBeatState
 						add(street);
 				
 				case 'limo':
-					curStage = 'limo';
-					defaultCamZoom = 0.90;
+					defaultCamZoom = 0.9;
 	
 					var skyBG:FlxSprite = new FlxSprite(-120, -50).loadGraphic(Paths.image('limo/limoSunset', 'week4'));
 					skyBG.scrollFactor.set(0.1, 0.1);
@@ -503,9 +498,7 @@ class PlayState extends MusicBeatState
 					// add(limo);
 	
 				case 'mall':
-					curStage = 'mall';
-	
-					defaultCamZoom = 0.80;
+					defaultCamZoom = 0.8;
 	
 					var bg:FlxSprite = new FlxSprite(-1000, -500).loadGraphic(Paths.image('christmas/bgWalls', 'week5'));
 					bg.antialiasing = true;
@@ -560,7 +553,6 @@ class PlayState extends MusicBeatState
 					add(santa);
 	
 				case 'mallEvil':
-					curStage = 'mallEvil';
 					var bg:FlxSprite = new FlxSprite(-400, -500).loadGraphic(Paths.image('christmas/evilBG', 'week5'));
 					bg.antialiasing = true;
 					bg.scrollFactor.set(0.2, 0.2);
@@ -579,8 +571,6 @@ class PlayState extends MusicBeatState
 					add(evilSnow);
 	
 				case 'school':
-					curStage = 'school';
-	
 					var bgSky = new FlxSprite().loadGraphic(Paths.image('weeb/weebSky', 'week6'));
 					bgSky.scrollFactor.set(0.1, 0.1);
 					add(bgSky);
@@ -643,8 +633,6 @@ class PlayState extends MusicBeatState
 					add(bgGirls);
 				
 				case 'schoolEvil':
-					curStage = 'schoolEvil';
-	
 					var posX = 400;
 					var posY = 200;
 	
@@ -660,6 +648,8 @@ class PlayState extends MusicBeatState
 					// add nothing lol
 			}
 		}
+					
+		curStage = SONG.stage;
 
 		var gfVersion:String = SONG.player3;
 
