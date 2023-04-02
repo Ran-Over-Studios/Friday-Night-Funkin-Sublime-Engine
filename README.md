@@ -1,6 +1,7 @@
 # Friday Night Funkin - Friday Night Funkin' Sublime Engine
 
 This is the repository for FNFSL Engine.
+This engine is no longer updated, check out [Blueberry Engine](https://github.com/SpunBlue/FNF-Blueberry-Engine)
 
 ![alt text](https://github.com/SpunBlue/Friday-Night-Funkin-Sublime-Engine/blob/master/assets/shared/images/sublimeengine.png?raw=true)
 
